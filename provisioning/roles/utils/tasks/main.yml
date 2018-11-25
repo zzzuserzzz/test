@@ -1,0 +1,8 @@
+---
+# tasks file for utils
+- name: "install utils for compile"
+  apt:
+    pkg: "{{ packages }}"
+    update_cache: yes
+    state: latest
+

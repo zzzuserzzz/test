@@ -1,0 +1,12 @@
+---
+# vars file for utils
+packages:
+- libcppunit-dev
+- python-setuptools
+- ant
+- autoconf
+- libtool
+- build-essential
+- python-dev
+- default-jdk
+

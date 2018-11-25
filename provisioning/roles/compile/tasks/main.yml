@@ -1,0 +1,48 @@
+---
+# tasks file for compile
+- name: Download zookeper src
+  get_url:
+    url: 'http://apache-mirror.rbc.ru/pub/apache/zookeeper/stable/{{ zookeep }}.tar.gz'
+    dest: '/tmp/{{ zookeep }}.tar.gz'
+
+- name: Unpack archive
+  unarchive:
+    src: '/tmp/{{ zookeep }}.tar.gz'
+    dest: /opt
+    remote_src: yes
+
+- name: change depends of java
+  lineinfile:
+    path: '/opt/{{ zookeep }}/src/packages/deb/zookeeper.control/control'
+    state: absent
+    regexp: '^Depends*.'
+
+- name: change postinst
+  lineinfile:
+    path: '/opt/{{ zookeep }}/src/packages/deb/zookeeper.control/postinst'
+    line: 'bash /etc/init.d/zookeeper start'
+
+- name: change postinst
+  lineinfile:
+    path: '/opt/{{ zookeep }}/src/packages/deb/zookeeper.control/postinst'
+    line: 'update-rc.d zookeeper defaults'
+
+- name: change java in script
+  lineinfile:
+    path: '/opt/{{ zookeep }}/src/packages/templates/conf/zookeeper-env.sh'
+    regexp: '^export JAVA_HOME='
+    line: 'export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-amd64/jre'
+
+- name: exectest
+  command: ant clean compile-test
+  args:
+    chdir: '/opt/{{ zookeep }}'
+
+- name: build deb
+  command: ant deb
+  args:
+    chdir: '/opt/{{ zookeep}}'
+
+- name: Install zookeepers .deb package
+  apt:
+    deb: '/opt/{{ zookeep }}/build/zookeeper_3.4.12-1_amd64.deb'
