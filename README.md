@@ -9,7 +9,7 @@
 Команды для тестирования:
 Первый тест:
 1. vagrant upload test.sh
-2. vagrnat ssh
+2. vagrant ssh
 3. ./test.sh
 4. exit
 
